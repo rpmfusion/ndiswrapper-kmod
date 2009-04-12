@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.54
-Release: 	2%{?dist}.19
+Release: 	3%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -44,9 +44,9 @@ http:/ndiswrapper.sourceforge.net
 kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 # go
 %setup -q -c -T -a 0
-(cd ndiswrapper-%{version} ; 
-%patch0 -p2 -b .we_update
-)
+#(cd ndiswrapper-%{version} ; 
+#%patch0 -p2 -b .we_update
+#)
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
     cp -a ndiswrapper-%{version} _kmod_build_${kernel_version%%___*}
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 23 2009 Xavier lamien <lxtnow@gmail.com> - 1.54.3
+- Disable iw-event drv patch (inclued by upstream).
+
 * Sun Apr 05 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-2.19
 - rebuild for new kernels
 
