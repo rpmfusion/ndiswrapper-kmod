@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.53
-Release: 	5%{?dist}.21
+Release: 	5%{?dist}.22
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -73,6 +73,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 27 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.53-5.22
+- rebuild for new kernels
+
 * Sun May 24 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.53-5.21
 - rebuild for new kernels
 
