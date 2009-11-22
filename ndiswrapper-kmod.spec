@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.54
-Release: 	4%{?dist}.14
+Release: 	4%{?dist}.15
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -17,9 +17,6 @@ Source11:       ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:         ndiswrapper-1.53-we_update.patch
 Patch1:         ndiswrapper-poll_controller.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-# needed for plague to make sure it builds for i586 and i686
-ExclusiveArch:  i586 i686 x86_64
 
 # get the needed BuildRequires (in parts depending on what we build for)
 BuildRequires:  %{_bindir}/kmodtool
@@ -75,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 22 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.15
+- rebuild for new kernel, disable i586 builds
+
 * Tue Nov 10 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.14
 - rebuild for F12 release kernel
 
