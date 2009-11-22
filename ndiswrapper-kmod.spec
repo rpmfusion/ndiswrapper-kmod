@@ -18,6 +18,9 @@ Patch0:         ndiswrapper-1.53-we_update.patch
 Patch1:         ndiswrapper-poll_controller.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+# needed for plague to make sure it builds for i586 and i686
+ExclusiveArch:  i686 x86_64
+
 # get the needed BuildRequires (in parts depending on what we build for)
 BuildRequires:  %{_bindir}/kmodtool
 %{!?kernels:BuildRequires: buildsys-build-rpmfusion-kerneldevpkgs-%{?buildforkernels:%{buildforkernels}}%{!?buildforkernels:current}-%{_target_cpu} }
