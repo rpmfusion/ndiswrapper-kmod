@@ -1,0 +1,18 @@
+--- ndiswrapper-1.56/driver/iw_ndis.c	2010/02/11 01:58:44	2720
++++ ndiswrapper-1.56/driver/iw_ndis.c	2010/02/11 04:30:29	2721
+@@ -1591,6 +1591,14 @@
+ 		if (wrqu->param.value)
+ 			deauthenticate(wnd);
+ 		break;
++#ifdef IW_AUTH_MFP
++	case IW_AUTH_MFP:
++	        if (wrqu->param.value == IW_AUTH_MFP_DISABLED ||
++                    wrqu->param.value == IW_AUTH_MFP_OPTIONAL)
++		        break;
++		WARNING("MFP not implemented");
++		return -EOPNOTSUPP;
++#endif
+ 	case IW_AUTH_TKIP_COUNTERMEASURES:
+ 	case IW_AUTH_DROP_UNENCRYPTED:
+ 	case IW_AUTH_RX_UNENCRYPTED_EAPOL:
+

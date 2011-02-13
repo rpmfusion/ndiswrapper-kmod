@@ -3,19 +3,26 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%define buildforkernels newest
+#define buildforkernels newest
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.54
-Release: 	4%{?dist}.23
+Version: 	1.56
+Release: 	1%{?dist}.1
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}.tar.gz
 Source11:       ndiswrapper-kmodtool-excludekernel-filterfile
-Patch0:         ndiswrapper-1.53-we_update.patch
-Patch1:         ndiswrapper-poll_controller.patch
+Patch0:         ndiswrapper-1.56-IW_AUTH_MFP.patch
+Patch1:         ndiswrapper-1.56-loader-fix-ioctl.patch
+Patch2:         ndiswrapper-1.56-pe_linker.patch
+Patch3:         ndiswrapper-1.56-driver-Makefile.patch
+Patch4:         ndiswrapper-1.56-win2lin_stubs.patch
+Patch5:         ndiswrapper-1.56-utils-Makefile.patch
+Patch6:         ndiswrapper-1.56-kernel-2.6.35-api-update-1.patch
+Patch7:         ndiswrapper-1.56-kernel-2.6.35-api-update-2.patch
+Patch8:         ndiswrapper-1.56-kernel-2.6.35-api-update-3.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -46,8 +53,17 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 # go
 %setup -q -c -T -a 0
 (cd ndiswrapper-%{version} ; 
+%patch0 -p1 -b .IW_AUTH_MFP
+%patch1 -p1 -b .loader-fix-ioctl
+%patch2 -p1 -b .pe_linker
+%patch3 -p1 -b .driver-Makefile
+%patch4 -p1 -b .win2lin_stubs
+%patch5 -p1 -b .utils-Makefile
+%patch6 -p1 -b .kernel-2.6.35-api-update-1
+%patch7 -p1 -b .kernel-2.6.35-api-update-2
+%patch8 -p1 -b .kernel-2.6.35-api-update-3
 #%patch0 -p2 -b .we_update
-%patch1 -p1 -b .poll_controller
+#%patch1 -p1 -b .poll_controller
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -75,29 +91,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Feb 12 2011 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.23
-- rebuild for updated kernel
-
-* Fri Dec 24 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.22
-- rebuild for updated kernel
-
-* Wed Dec 22 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.21
-- rebuild for updated kernel
-
-* Mon Dec 20 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.20
-- rebuild for updated kernel
-
-* Fri Dec 17 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.19
-- rebuild for updated kernel
-
-* Sun Dec 05 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.18
-- rebuild for F-14 kernel
-
-* Mon Nov 01 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.17
-- rebuild for F-14 kernel
-
-* Fri Oct 29 2010 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.16
-- rebuild for F-14 kernel
+* Wed Dec 01 2010 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1
+- update for new kernel-2.6.35 api that breaks 1.54 build
 
 * Sun Nov 22 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.15
 - rebuild for new kernel, disable i586 builds
