@@ -23,6 +23,7 @@ Patch5:         ndiswrapper-1.56-utils-Makefile.patch
 Patch6:         ndiswrapper-1.56-kernel-2.6.35-api-update-1.patch
 Patch7:         ndiswrapper-1.56-kernel-2.6.35-api-update-2.patch
 Patch8:         ndiswrapper-1.56-kernel-2.6.35-api-update-3.patch
+Patch9:         ndiswrapper-1.56-redundant-define.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -62,6 +63,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %patch6 -p1 -b .kernel-2.6.35-api-update-1
 %patch7 -p1 -b .kernel-2.6.35-api-update-2
 %patch8 -p1 -b .kernel-2.6.35-api-update-3
+%patch9 -p1 -b .redundant-define
 #%patch0 -p2 -b .we_update
 #%patch1 -p1 -b .poll_controller
 )
@@ -91,8 +93,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Dec 01 2010 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1
-- update for new kernel-2.6.35 api that breaks 1.54 build
+* Thu May 26 2011 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1.1
+- remove redundant defines that break build on new F-15 kernel
 
 * Sun Nov 22 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.15
 - rebuild for new kernel, disable i586 builds
