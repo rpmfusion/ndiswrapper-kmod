@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.56
-Release: 	1%{?dist}.2
+Release: 	2%{?dist}.2
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -93,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 28 2011 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.56-2.2
+- rebuild for F15 release kernel
+
 * Thu May 26 2011 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1.1
 - remove redundant defines that break build on new F-15 kernel
 
