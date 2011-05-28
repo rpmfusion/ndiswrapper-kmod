@@ -3,12 +3,12 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-#define buildforkernels newest
+%define buildforkernels newest
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.56
-Release: 	1%{?dist}.1
+Release: 	2%{?dist}.3
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -23,6 +23,7 @@ Patch5:         ndiswrapper-1.56-utils-Makefile.patch
 Patch6:         ndiswrapper-1.56-kernel-2.6.35-api-update-1.patch
 Patch7:         ndiswrapper-1.56-kernel-2.6.35-api-update-2.patch
 Patch8:         ndiswrapper-1.56-kernel-2.6.35-api-update-3.patch
+Patch9:         ndiswrapper-1.56-redundant-define.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -62,6 +63,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %patch6 -p1 -b .kernel-2.6.35-api-update-1
 %patch7 -p1 -b .kernel-2.6.35-api-update-2
 %patch8 -p1 -b .kernel-2.6.35-api-update-3
+%patch9 -p1 -b .redundant-define
 #%patch0 -p2 -b .we_update
 #%patch1 -p1 -b .poll_controller
 )
@@ -91,8 +93,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Dec 01 2010 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1
-- update for new kernel-2.6.35 api that breaks 1.54 build
+* Sat May 28 2011 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.56-2.3
+- rebuild for updated kernel
+
+* Sat May 28 2011 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.56-2.2
+- rebuild for F15 release kernel
+
+* Thu May 26 2011 Tristan Moody <tmoody [AT] ku [DOT] edu> - 1.56-1.1
+- remove redundant defines that break build on new F-15 kernel
 
 * Sun Nov 22 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 1.54-4.15
 - rebuild for new kernel, disable i586 builds
