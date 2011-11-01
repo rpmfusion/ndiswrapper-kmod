@@ -3,27 +3,19 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%define buildforkernels current
+#define buildforkernels current
+
+%global _rc rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.56
-Release: 	2%{?dist}.5
+Version: 	1.57
+Release: 	0.1%{?_rc}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
-Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}.tar.gz
-Source11:       ndiswrapper-kmodtool-excludekernel-filterfile
-Patch0:         ndiswrapper-1.56-IW_AUTH_MFP.patch
-Patch1:         ndiswrapper-1.56-loader-fix-ioctl.patch
-Patch2:         ndiswrapper-1.56-pe_linker.patch
-Patch3:         ndiswrapper-1.56-driver-Makefile.patch
-Patch4:         ndiswrapper-1.56-win2lin_stubs.patch
-Patch5:         ndiswrapper-1.56-utils-Makefile.patch
-Patch6:         ndiswrapper-1.56-kernel-2.6.35-api-update-1.patch
-Patch7:         ndiswrapper-1.56-kernel-2.6.35-api-update-2.patch
-Patch8:         ndiswrapper-1.56-kernel-2.6.35-api-update-3.patch
-Patch9:         ndiswrapper-1.56-redundant-define.patch
+Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?_rc}.tar.gz
+Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -52,24 +44,13 @@ http:/ndiswrapper.sourceforge.net
 # print kmodtool output for debugging purposes:
 kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 # go
-%setup -q -c -T -a 0
-(cd ndiswrapper-%{version} ; 
-%patch0 -p1 -b .IW_AUTH_MFP
-%patch1 -p1 -b .loader-fix-ioctl
-%patch2 -p1 -b .pe_linker
-%patch3 -p1 -b .driver-Makefile
-%patch4 -p1 -b .win2lin_stubs
-%patch5 -p1 -b .utils-Makefile
-%patch6 -p1 -b .kernel-2.6.35-api-update-1
-%patch7 -p1 -b .kernel-2.6.35-api-update-2
-%patch8 -p1 -b .kernel-2.6.35-api-update-3
-%patch9 -p1 -b .redundant-define
-#%patch0 -p2 -b .we_update
-#%patch1 -p1 -b .poll_controller
-)
-sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}/driver/Makefile
+%setup -q -c -T -a 0 -n %{name}-%{version}%{?_rc}
+#(cd ndiswrapper-%{version} ; 
+#Nothing to patch
+#)
+sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?_rc}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
-    cp -a ndiswrapper-%{version} _kmod_build_${kernel_version%%___*}
+    cp -a ndiswrapper-%{version}%{?_rc} _kmod_build_${kernel_version%%___*}
 done
 
 
@@ -93,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1
+- Update to 1.57rc1
+
 * Tue Nov 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.56-2.5
 - Rebuild for F-16 kernel
 
