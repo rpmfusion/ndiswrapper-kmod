@@ -5,12 +5,12 @@
 # a new akmod package will only get build when a new one is actually needed
 %define buildforkernels current
 
-%global _rc rc1
+#global _rc rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.57
-Release: 	0.1%{?_rc}%{?dist}.1
+Release: 	1%{?_rc}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -74,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1
+- Update to 1.57
+
 * Wed Nov 02 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.1
 - Rebuild for F-16 kernel
 
