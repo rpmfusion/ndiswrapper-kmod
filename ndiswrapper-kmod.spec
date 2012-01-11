@@ -3,14 +3,14 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%define buildforkernels newest
+%define buildforkernels current
 
-%global _rc rc1
+#global _rc rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.57
-Release: 	0.1%{?_rc}%{?dist}.12
+Release: 	1%{?_rc}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -74,38 +74,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jan 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.12
-- rebuild for updated kernel
-
-* Wed Jan 04 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.11
-- rebuild for updated kernel
-
-* Fri Dec 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.10
-- rebuild for updated kernel
-
-* Sat Dec 17 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.9
-- rebuild for updated kernel
-
-* Sat Dec 17 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.8
-- rebuild for updated kernel
-
-* Tue Dec 13 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.7
-- rebuild for updated kernel
-
-* Sat Dec 10 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.6
-- rebuild for updated kernel
-
-* Thu Dec 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.5
-- rebuild for updated kernel
-
-* Wed Nov 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.4
-- rebuild for updated kernel
-
-* Wed Nov 16 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.3
-- rebuild for updated kernel
-
-* Mon Nov 14 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.2
-- rebuild for updated kernel
+* Wed Jan 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1
+- Update to 1.57
 
 * Wed Nov 02 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.1
 - Rebuild for F-16 kernel
