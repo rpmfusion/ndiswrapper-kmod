@@ -5,17 +5,18 @@
 # a new akmod package will only get build when a new one is actually needed
 %define buildforkernels newest
 
-%global _rc rc1
+#global _rc rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.57
-Release: 	0.1%{?_rc}%{?dist}.9
+Release: 	1%{?_rc}%{?dist}.1
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?_rc}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
+Patch0:		ndiswrapper-kmod-nomodinfo.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -45,9 +46,9 @@ http:/ndiswrapper.sourceforge.net
 kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 # go
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?_rc}
-#(cd ndiswrapper-%{version} ; 
-#Nothing to patch
-#)
+(cd ndiswrapper-%{version} ; 
+%patch0 -p1 -b .orig
+)
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?_rc}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
     cp -a ndiswrapper-%{version}%{?_rc} _kmod_build_${kernel_version%%___*}
@@ -74,29 +75,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Jan 15 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.9
+* Sun Jan 15 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1.1
 - rebuild for updated kernel
 
-* Mon Jan 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.8
-- rebuild for updated kernel
-
-* Wed Jan 04 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.7
-- rebuild for updated kernel
-
-* Fri Dec 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.6
-- rebuild for updated kernel
-
-* Sat Dec 17 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.5
-- rebuild for updated kernel
-
-* Tue Dec 13 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.4
-- rebuild for updated kernel
-
-* Thu Dec 01 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.3
-- rebuild for updated kernel
-
-* Wed Nov 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.2
-- rebuild for updated kernel
+* Wed Jan 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1
+- Update to 1.57
 
 * Wed Nov 02 2011 Nicolas Chauvet <kwizart@gmail.com> - 1.57-0.1rc1.1
 - Rebuild for F-16 kernel

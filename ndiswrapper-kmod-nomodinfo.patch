@@ -1,0 +1,14 @@
+diff -up ndiswrapper-1.57/driver/Makefile.orig ndiswrapper-1.57/driver/Makefile
+--- ndiswrapper-1.57/driver/Makefile.orig	2012-01-11 22:04:35.103054918 +0100
++++ ndiswrapper-1.57/driver/Makefile	2012-01-11 22:06:37.880672013 +0100
+@@ -192,8 +192,8 @@ clean:
+ 	rm -rf .tmp_versions
+ 
+ install: config_check $(MODULE)
+-	@/sbin/modinfo $(MODULE) | grep -q "^vermagic: *$(KVERS) " || \
+-		{ echo "$(MODULE)" is not for Linux $(KVERS); exit 1; }
++	#@/sbin/modinfo $(MODULE) | grep -q "^vermagic: *$(KVERS) " || \
++	#	{ echo "$(MODULE)" is not for Linux $(KVERS); exit 1; }
+ 	mkdir -p -m 755 $(DESTDIR)$(INST_DIR)
+ 	install -m 0644 $(MODULE) $(DESTDIR)$(INST_DIR)
+ ifndef DESTDIR
