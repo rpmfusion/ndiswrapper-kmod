@@ -1,6 +1,6 @@
 --- a/driver/wrapndis.c	2012/03/26 17:00:31	3107
 +++ b/driver/wrapndis.c	2012/03/26 17:01:18	3108
-@@ -1675,6 +1675,7 @@ static int ndis_set_wol(struct net_devic
+@@ -1675,6 +1675,7 @@
  	return 0;
  }
  
@@ -8,7 +8,7 @@
  static u32 ndis_get_tx_csum(struct net_device *dev)
  {
  	struct ndis_device *wnd = netdev_priv(dev);
-@@ -1735,18 +1736,21 @@ static int ndis_set_sg(struct net_device
+@@ -1735,18 +1736,21 @@
  	else
  		return -EOPNOTSUPP;
  }
@@ -30,17 +30,6 @@
  };
  
  static int notifier_event(struct notifier_block *notifier, unsigned long event,
-@@ -1837,6 +1841,10 @@ static NDIS_STATUS ndis_start_device(str
- 		NDIS_PACKET_TYPE_BROADCAST | NDIS_PACKET_TYPE_MULTICAST;
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29)
- 	net_dev->netdev_ops = &ndis_netdev_ops;
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 3, 0)
-+	net_dev->hw_features |= NETIF_F_SG | NETIF_F_IP_CSUM |
-+				NETIF_F_RXCSUM;
-+#endif
- #else
- 	net_dev->init = ndis_net_dev_init;
- 	net_dev->uninit = ndis_net_dev_uninit;
 --- a/driver/ndis.c	2011/10/04 15:31:37	3085
 +++ b/driver/ndis.c	2012/03/26 17:00:31	3107
 @@ -2654,9 +2654,15 @@
