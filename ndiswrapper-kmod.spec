@@ -10,13 +10,14 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.58
-Release: 	0.1%{?pre}%{?dist}.5
+Release: 	0.2%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
+Patch1:         3.7_kernel.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -48,6 +49,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
+%patch1 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -75,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jan 08 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-0.2rc1
+- patched and rebuilt for 3.7 kernel
+
 * Thu Jan 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.5
 - Rebuilt for f18 final kernel
 
