@@ -1,3 +1,75 @@
+Description: version.h is in a different location for 3.7
+Author: Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>
+
+--- a/driver/Makefile
++++ b/driver/Makefile
+@@ -123,6 +123,9 @@
+ OBJS += workqueue.o
+ endif
+ 
++ifneq (,$(wildcard $(KBUILD)/include/generated/uapi/linux/version.h))
++EXTRA_CFLAGS += -DUAPI
++endif
+ 
+ all: config_check modules
+ 
+@@ -157,7 +160,7 @@
+ 
+ 
+ config_check:
+-	@if [ ! -f $(KBUILD)/include/linux/version.h ]; then \
++	@if [ ! -f $(KBUILD)/include/linux/version.h ] && [ ! -f $(KBUILD)/include/generated/uapi/linux/version.h ]; then \
+ 		echo; echo; \
+ 		echo "Cannot find kernel build files in $(KBUILD)"; \
+ 		echo "Please give the path to kernel build directory with" ; \
+--- a/driver/ntoskernel.h
++++ b/driver/ntoskernel.h
+@@ -36,7 +36,11 @@
+ #include <linux/usb.h>
+ #include <linux/spinlock.h>
+ #include <asm/mman.h>
++#ifdef UAPI
++#include <generated/uapi/linux/version.h>
++#else
+ #include <linux/version.h>
++#endif
+ #include <linux/etherdevice.h>
+ #include <net/iw_handler.h>
+ #include <linux/ethtool.h>
+@@ -204,19 +208,6 @@
+ void wrap_cancel_work(struct work_struct *work);
+ void wrap_flush_wq(struct workqueue_struct *workq);
+ 
+-#else // WRAP_WQ
+-
+-/* Compatibility for Linux before 2.6.20 where INIT_WORK takes 3 arguments */
+-#if !defined(INIT_WORK_NAR) && !defined(INIT_DELAYED_WORK_DEFERRABLE)
+-typedef void (*compat_work_func_t)(void *work);
+-typedef void (*work_func_t)(struct work_struct *work);
+-static inline void (INIT_WORK)(struct work_struct *work, work_func_t func)
+-{
+-	INIT_WORK(work, (compat_work_func_t)func, work);
+-}
+-#undef INIT_WORK
+-#endif
+-
+ #endif // WRAP_WQ
+ 
+ #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,18)
+--- a/driver/iw_ndis.c
++++ b/driver/iw_ndis.c
+@@ -13,7 +13,11 @@
+  *
+  */
+ 
++#ifdef UAPI
++#include <generated/uapi/linux/version.h>
++#else
+ #include <linux/version.h>
++#endif
+ #include <linux/wireless.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
 --- a/driver/wrapndis.c	2012/03/26 17:00:31	3107
 +++ b/driver/wrapndis.c	2012/03/26 17:01:18	3108
 @@ -1675,6 +1675,7 @@
