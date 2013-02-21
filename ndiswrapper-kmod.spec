@@ -3,21 +3,20 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%define buildforkernels newest
+%define buildforkernels current
 
-%global pre rc1
+#global pre rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.58
-Release: 	0.2%{?pre}%{?dist}.10
+Release: 	1%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:         3.7_kernel.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -49,7 +48,6 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
-%patch1 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -77,53 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Feb 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.10
-- Rebuilt for kernel
-
-* Sat Feb 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.9
-- Rebuilt for kernel
-
-* Sat Feb 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.8
-- Rebuilt for kernel
-
-* Wed Feb 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.7
-- Rebuilt for kernel
-
-* Tue Feb 05 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.6
-- Rebuilt for kernel
-
-* Wed Jan 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.5
-- Rebuilt for updated kernel
-
-* Fri Jan 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.4
-- Rebuilt for updated kernel
-
-* Thu Jan 17 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.3
-- Rebuilt for updated kernel
-
-* Mon Jan 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.2
-- Rebuilt for updated kernel
-
-* Sun Jan 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.2rc1.1
-- Rebuilt for updated kernel
-
-* Tue Jan 08 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-0.2rc1
-- patched and rebuilt for 3.7 kernel
-
-* Thu Jan 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.5
-- Rebuilt for f18 final kernel
-
-* Fri Dec 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.4
-- Rebuilt for current f18 kernel
-
-* Wed Dec 12 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.3
-- Rebuilt for current f18 kernel
-
-* Sun Nov 25 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.2
-- Rebuilt for current f18 kernel
-
-* Sun Nov 25 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.58-0.1rc1.1
-- Rebuilt for Fedora 18 Beta kernel
+* Thu Feb 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1
+- Update to 1.58
 
 * Tue Feb 07 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1.1
 - Rebuild for UsrMove
