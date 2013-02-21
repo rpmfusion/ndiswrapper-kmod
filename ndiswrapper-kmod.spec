@@ -3,21 +3,20 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%define buildforkernels newest
+%define buildforkernels current
 
-#global _rc rc1
+#global pre rc1
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.57
-Release: 	3%{?dist}.11
+Version: 	1.58
+Release: 	1%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
-Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?_rc}.tar.gz
+Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:         ndiswrapper_3.3_kernel.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -46,14 +45,13 @@ http:/ndiswrapper.sourceforge.net
 # print kmodtool output for debugging purposes:
 kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfile %{SOURCE11} %{?buildforkernels:--%{buildforkernels}} %{?kernels:--for-kernels "%{?kernels}"} 2>/dev/null
 # go
-%setup -q -c -T -a 0 -n %{name}-%{version}%{?_rc}
-(cd ndiswrapper-%{version} ; 
+%setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
+(cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
-%patch1 -p1 -b .orig
 )
-sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?_rc}/driver/Makefile
+sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
-    cp -a ndiswrapper-%{version}%{?_rc} _kmod_build_${kernel_version%%___*}
+    cp -a ndiswrapper-%{version}%{?pre} _kmod_build_${kernel_version%%___*}
 done
 
 
@@ -77,174 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Feb 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.11
-- Rebuilt for kernel
-
-* Sat Feb 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.10
-- Rebuilt for kernel
-
-* Sat Feb 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.9
-- Rebuilt for kernel
-
-* Tue Feb 05 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.8
-- Rebuilt for kernel
-
-* Mon Feb 04 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.7
-- Rebuilt for akmod
-
-* Wed Jan 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.6
-- Rebuilt for akmod
-
-* Wed Jan 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.5
-- Rebuilt for akmod
-
-* Wed Jan 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.4
-- Rebuilt for updated kernel
-
-* Fri Jan 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.3
-- Rebuilt for updated kernel
-
-* Fri Jan 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.2
-- Rebuilt for updated kernel
-
-* Sat Jan 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-3.1
-- Rebuilt for updated kernel
-
-* Sat Jan 19 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.57-3
-- patch for 3.7 kernel
-
-* Thu Jan 17 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.44
-- Rebuilt for updated kernel
-
-* Wed Jan 09 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.43
-- Rebuilt for updated kernel
-
-* Sun Dec 23 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.42
-- Rebuilt for updated kernel
-
-* Sat Dec 22 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.41
-- Rebuilt for updated kernel
-
-* Tue Dec 18 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.40
-- Rebuilt for updated kernel
-
-* Wed Dec 12 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.39
-- Rebuilt for updated kernel
-
-* Wed Dec 05 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.38
-- Rebuilt for updated kernel
-
-* Wed Nov 28 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.37
-- Rebuilt for updated kernel
-
-* Wed Nov 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.36
-- Rebuilt for updated kernel
-
-* Tue Nov 20 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.35
-- Rebuilt for updated kernel
-
-* Thu Nov 08 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.34
-- Rebuilt for updated kernel
-
-* Thu Nov 01 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.33
-- Rebuilt for updated kernel
-
-* Tue Oct 23 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.32
-- Rebuilt for updated kernel
-
-* Thu Oct 18 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.31
-- Rebuilt for updated kernel
-
-* Thu Oct 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.30
-- Rebuilt for updated kernel
-
-* Mon Oct 08 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.29
-- Rebuilt for updated kernel
-
-* Wed Oct 03 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.28
-- Rebuilt for updated kernel
-
-* Thu Sep 27 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.27
-- Rebuilt for updated kernel
-
-* Mon Sep 17 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.26
-- Rebuilt for updated kernel
-
-* Fri Aug 31 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.25
-- Rebuilt for updated kernel
-
-* Wed Aug 22 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.24
-- Rebuilt for updated kernel
-
-* Thu Aug 16 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.23
-- Rebuilt for updated kernel
-
-* Sat Aug 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.22
-- Rebuilt for updated kernel
-
-* Tue Jul 31 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.21
-- Rebuilt for updated kernel
-
-* Sat Jul 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.20
-- Rebuilt for updated kernel
-
-* Tue Jul 17 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.19
-- Rebuilt for updated kernel
-
-* Fri Jul 06 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.18
-- Rebuilt for updated kernel
-
-* Thu Jun 28 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.17
-- Rebuilt for updated kernel
-
-* Thu Jun 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.16
-- Rebuilt for updated kernel
-
-* Sun Jun 17 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.15
-- Rebuilt for updated kernel
-
-* Tue Jun 05 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.14
-- Rebuilt for updated kernel
-
-* Sun May 27 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.13
-- Rebuilt for updated kernel
-
-* Sat May 26 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.11
-- Rebuilt for release kernel
-
-* Sun May 13 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.10
-- Rebuilt for release kernel
-
-* Sun May 13 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.9
-- rebuild for updated kernel
-
-* Wed May 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.8
-- rebuild for updated kernel
-
-* Sun May 06 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.7
-- rebuild for updated kernel
-
-* Sat May 05 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.6
-- rebuild for updated kernel
-
-* Wed May 02 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.5
-- rebuild for updated kernel
-
-* Sat Apr 28 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.4
-- rebuild for updated kernel
-
-* Sun Apr 22 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.3
-- rebuild for updated kernel
-
-* Mon Apr 16 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.2
-- rebuild for updated kernel
-
-* Thu Apr 12 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-2.1
-- rebuild for beta kernel
-
-* Fri Mar 30 2012 leigh scott <leigh123linux@googlemail.com> - 1.57-2
-- patched for 3.3.0 kernel
-- fix release tag
+* Thu Feb 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1
+- Update to 1.58
 
 * Tue Feb 07 2012 Nicolas Chauvet <kwizart@gmail.com> - 1.57-1.1
 - Rebuild for UsrMove
