@@ -10,13 +10,14 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.58
-Release: 	1%{?pre}%{?dist}.18
+Release: 	2%{?pre}%{?dist}.2
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
+Patch1:         ndiswrapper-1.58-add_taint.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -48,6 +49,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
+%patch1 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -75,49 +77,55 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat May 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.18
+* Sat May 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-2.2
 - Rebuilt for kernel
 
-* Sun May 19 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.17
+* Wed May 22 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-2.1
 - Rebuilt for kernel
 
-* Thu May 09 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.16
+* Wed May 15 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-2
+- patch for 3.9 kernel
+
+* Tue May 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.15
+- Rebuilt for kernel
+
+* Fri May 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.14
+- Rebuilt for kernel
+
+* Wed May 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.13
+- Rebuilt for kernel
+
+* Sun Apr 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.12
 Rebuilt for kernel
 
-* Fri May 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.15
+* Thu Apr 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.11
 - Rebuilt for kernel
 
-* Wed May 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.14
+* Thu Apr 18 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.10
 - Rebuilt for kernel
 
-* Thu Apr 18 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.13
+* Sat Apr 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.9
 - Rebuilt for kernel
 
-* Thu Apr 18 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.12
+* Wed Apr 10 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.8
 - Rebuilt for kernel
 
-* Sat Apr 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.11
+* Tue Apr 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.7
 - Rebuilt for kernel
 
-* Sun Mar 24 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.10
+* Fri Mar 22 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.6
 - Rebuilt for kernel
 
-* Sat Mar 23 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.8
-- Rebuilt for akmod
-
-* Mon Mar 18 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.6
+* Mon Mar 18 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.5
 - Rebuilt for kernel
 
-* Fri Mar 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.5
+* Fri Mar 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.4
 - Rebuilt for kernel
-
-* Sun Mar 10 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.4
-Rebuilt for kernel
 
 * Sun Mar 10 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.3
 Rebuilt for kernel
 
-* Sat Mar 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.2
+* Thu Feb 28 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.2
 - Rebuilt for kernel
 
 * Tue Feb 26 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.1
