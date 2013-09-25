@@ -60,6 +60,7 @@ done
 
 
 %build
+export CCACHE_DISABLE=1
 for kernel_version  in %{?kernel_versions} ; do
     make V=1 %{?_smp_mflags} -C _kmod_build_${kernel_version%%___*} KVERS="${kernel_version%%___*}" KSRC="${kernel_version##*___}" KBUILD="${kernel_version##*___}" -C driver 
 done
