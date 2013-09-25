@@ -79,6 +79,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 25 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-2.14
+- Rebuilt for kernel
+
 * Sat Aug 31 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-2.13
 - Rebuilt for kernel
 
