@@ -9,16 +9,14 @@
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.58
-Release: 	6%{?pre}%{?dist}.23
+Version: 	1.59
+Release: 	5%{?pre}%{?dist}.12
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:         ndiswrapper-1.58-add_taint.patch
-Patch2:		ndiswrapper-procfs-api.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -50,8 +48,6 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
-%patch1 -p1 -b .orig
-%patch2 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -60,7 +56,6 @@ done
 
 
 %build
-export CCACHE_DISABLE=1
 for kernel_version  in %{?kernel_versions} ; do
     make V=1 %{?_smp_mflags} -C _kmod_build_${kernel_version%%___*} KVERS="${kernel_version%%___*}" KSRC="${kernel_version##*___}" KBUILD="${kernel_version##*___}" -C driver 
 done
@@ -80,135 +75,65 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Feb 26 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.23
+* Tue Feb 25 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.12
 - Rebuilt for kernel
 
-* Mon Feb 24 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.22
+* Mon Feb 24 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.11
 - Rebuilt for kernel
 
-* Thu Feb 20 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.21
+* Mon Feb 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.10
 - Rebuilt for kernel
 
-* Sat Feb 15 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.20
+* Sat Feb 15 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.9
 - Rebuilt for kernel
 
-* Fri Feb 07 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.19
+* Wed Feb 12 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.8
 - Rebuilt for kernel
 
-* Thu Jan 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.18
+* Fri Feb 07 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.7
 - Rebuilt for kernel
 
-* Tue Jan 28 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.17
+* Thu Jan 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.6
 - Rebuilt for kernel
 
-* Fri Jan 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.16
+* Tue Jan 28 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.5
 - Rebuilt for kernel
 
-* Sun Jan 12 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.15
+* Fri Jan 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.4
 - Rebuilt for kernel
 
-* Wed Dec 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.14
+* Sun Jan 12 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.3
 - Rebuilt for kernel
 
-* Fri Dec 20 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.13
+* Wed Dec 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.2
 - Rebuilt for kernel
 
-* Tue Dec 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.12
+* Fri Dec 20 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.1
 - Rebuilt for kernel
 
-* Tue Dec 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.11
-- Rebuilt for kernel
+* Tue Dec 10 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5
+- Rebuilt for f20 final kernel
 
-* Thu Nov 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.10
-- Rebuilt for kernel
+* Sat Dec 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-4
+- Rebuilt for f20 final kernel
 
-* Thu Nov 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.9
-- Rebuilt for kernel
+* Sat Dec 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-3
+- Rebuilt for current kernel
 
-* Mon Nov 04 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.8
-- Rebuilt for kernel
+* Sat Dec 07 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-2.1
+- Test for current
 
-* Mon Nov 04 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.7
-- Rebuilt for kernel
+* Sun Dec 01 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.59-2
+- drop patch
 
-* Tue Oct 22 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.6
-- Rebuilt for kernel
+* Sun Dec 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-1
+- Update to 1.59
 
-* Mon Oct 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.5
-- Rebuilt for kernel
-
-* Fri Oct 11 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.4
-- Rebuilt for kernel
-
-* Fri Oct 04 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.3
-- Rebuilt for kernel
-
-* Tue Oct 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.2
-- Rebuilt for kernel
-
-* Sun Sep 29 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-6.1
-- Rebuilt for kernel
-
-* Thu Sep 26 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-6
-- bump version again as I forgot to remove the minor version
-
-* Thu Sep 26 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-5
-- bump version
-- Patched for 3.11 kernel (abn)
-
-* Fri Aug 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.14
-- Rebuilt for kernel
-
-* Thu Aug 22 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.13
-- Rebuilt for kernel
-
-* Fri Aug 16 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.11
-- Rebuilt for kernel
-
-* Tue Aug 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.10
-- Rebuilt for kernel
-
-* Thu Aug 08 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.9
-- Rebuilt for kernel
-
-* Tue Jul 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.8
-- Rebuilt for kernel
-
-* Fri Jul 26 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.7
-- Rebuilt for kernel
-
-* Sat Jul 13 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.6
-- Rebuilt for kernel
-
-* Sat Jul 06 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.5
-- Rebuilt for kernel
-
-* Sun Jun 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.4
-- Rebuilt for kernel
-
-* Sat Jun 29 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.3
-- Rebuilt for kernel
-
-* Sat Jun 29 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-4.2
-- Rebuilt for current f19 kernel
-
-* Fri Jun 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-3.2
-- Rebuilt for current f19 kernel
-
-* Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-3.1
-- Rebuilt for current f19 kernel
-
-* Wed Jun 12 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-3
-- Rebuilt for kernel
+* Sun Dec 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-2.1
+- Rebuilt for f20 final kernel
 
 * Wed May 15 2013 Leigh Scott <leigh123linux@googlemail.com> - 1.58-2
 - patch for 3.9 kernel
-
-* Tue May 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.2
-- Rebuilt for kernel
-
-* Tue May 14 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1.1
-- Rebuilt for kernel
 
 * Thu Feb 21 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.58-1
 - Update to 1.58
