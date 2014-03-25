@@ -10,7 +10,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.59
-Release: 	5%{?pre}%{?dist}.14
+Release: 	5%{?pre}%{?dist}.15
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 25 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.15
+- Rebuilt for kernel
+
 * Sun Mar 09 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.14
 - Rebuilt for kernel
 
