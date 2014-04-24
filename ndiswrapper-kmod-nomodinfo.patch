@@ -1,7 +1,7 @@
 diff -up ndiswrapper-1.57/driver/Makefile.orig ndiswrapper-1.57/driver/Makefile
 --- ndiswrapper-1.57/driver/Makefile.orig	2012-01-11 22:04:35.103054918 +0100
 +++ ndiswrapper-1.57/driver/Makefile	2012-01-11 22:06:37.880672013 +0100
-@@ -192,8 +192,8 @@ clean:
+@@ -191,8 +191,8 @@ clean:
  	rm -rf .tmp_versions
  
  install: config_check $(MODULE)

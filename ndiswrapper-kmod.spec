@@ -5,12 +5,10 @@
 # a new akmod package will only get build when a new one is actually needed
 %global buildforkernels current
 
-#global pre rc1
-
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.59
-Release: 	6%{?pre}%{?dist}
+Release: 	6%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
