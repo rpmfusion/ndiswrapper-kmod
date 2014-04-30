@@ -3,12 +3,12 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%global buildforkernels current
+%global buildforkernels newest
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.59
-Release: 	6%{?dist}
+Release: 	6%{?dist}.1
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.1
+- Rebuilt for kernel
+
 * Thu Apr 24 2014 Leigh Scott <leigh123linux@googlemail.com> - 1.59-6
 - patch for 3.14 kernel
 
