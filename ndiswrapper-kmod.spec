@@ -11,7 +11,7 @@ Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.59
 <<<<<<< ndiswrapper-kmod.spec
-Release: 	7%{?pre}%{?dist}.17
+Release: 	7%{?pre}%{?dist}.18
 =======
 Release: 	7%{?pre}%{?dist}.15
 >>>>>>> 1.80
@@ -81,6 +81,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 15 2015 Nicolas Chauvet <kwizart@gmail.com>
+- Rebuilt for kernel
+
 * Mon Mar 30 2015 Nicolas Chauvet <kwizart@gmail.com>
 - Rebuilt for kernel
 
