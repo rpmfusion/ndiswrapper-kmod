@@ -9,16 +9,14 @@
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.59
-Release: 	8%{?pre}%{?dist}
+Version: 	1.60
+Release: 	1%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:         kernel-3.14.patch
-Patch2:         Support-kernel-4.0.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -50,8 +48,6 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
-%patch1 -p1 -b .314
-%patch2 -p1 -b .400
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -79,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jun 19 2016 Leigh Scott <leigh123linux@googlemail.com> - 1.60-1
+- Update to 1.60
+
 * Mon May 25 2015 Leigh Scott <leigh123linux@googlemail.com> - 1.59-8
 - Patch for 4.0.0 kernel
 
