@@ -3,20 +3,22 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%global buildforkernels current
+%if 0%{?fedora}
+%global buildforkernels akmod
+%global debug_package %{nil}
+%endif
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.59
-Release: 	7%{?dist}
+Version: 	1.61
+Release: 	1%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:         kernel-3.14.patch
-Patch2:         Support-kernel-4.0.patch
+Patch1:         ndiswrapper-4.7-kernel.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -77,206 +79,89 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon May 25 2015 Leigh Scott <leigh123linux@googlemail.com> - 1.59-7
+* Tue Jun 27 2017 Nicolas Chauvet <kwizart@gmail.com> - 1.61-1
+- Update to 1.61
+
+* Mon Mar 20 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 1.60-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Mon Sep 19 2016 Leigh Scott <leigh123linux@googlemail.com> - 1.60-2
+- Patch for 4.7 kernel
+
+* Sun Jun 19 2016 Leigh Scott <leigh123linux@googlemail.com> - 1.60-1
+- Update to 1.60
+
+* Mon May 25 2015 Leigh Scott <leigh123linux@googlemail.com> - 1.59-8
 - Patch for 4.0.0 kernel
 
-* Sun May 24 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.47
+* Sun May 24 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.25
 - Rebuilt for kernel
 
-* Wed May 13 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.46
+* Wed May 20 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.24
 - Rebuilt for kernel
 
-* Sat May 09 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.45
+* Wed May 13 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.23
 - Rebuilt for kernel
 
-* Sat May 02 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.44
+* Sat May 09 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.22
 - Rebuilt for kernel
 
-* Wed Apr 22 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.43
+* Sat May 02 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.21
 - Rebuilt for kernel
 
-* Wed Apr 15 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.42
+* Wed Apr 22 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.20
 - Rebuilt for kernel
 
-* Mon Mar 30 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.41
+* Wed Apr 15 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.19
 - Rebuilt for kernel
 
-* Tue Mar 10 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.40
+* Mon Mar 30 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.15
 - Rebuilt for kernel
 
-* Fri Mar 06 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.39
+* Mon Mar 23 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.14
 - Rebuilt for kernel
 
-* Sat Feb 14 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.38
+* Sat Mar 21 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.13
 - Rebuilt for kernel
 
-* Sun Feb 08 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.37
+* Tue Mar 10 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.12
 - Rebuilt for kernel
 
-* Wed Feb 04 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.36
+* Fri Mar 06 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.11
 - Rebuilt for kernel
 
-* Mon Feb 02 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.35
+* Sat Feb 14 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.9
 - Rebuilt for kernel
 
-* Sat Jan 10 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.34
+* Sun Feb 08 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.8
 - Rebuilt for kernel
 
-* Thu Dec 18 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.33
+* Wed Feb 04 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.7
 - Rebuilt for kernel
 
-* Sat Dec 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.32
+* Mon Feb 02 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.6
 - Rebuilt for kernel
 
-* Sun Nov 23 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.31
+* Wed Jan 21 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.5
 - Rebuilt for kernel
 
-* Sun Nov 16 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.30
+* Thu Jan 15 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.4
 - Rebuilt for kernel
 
-* Sun Nov 16 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.29
+* Sat Jan 10 2015 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.3
 - Rebuilt for kernel
 
-* Mon Nov 10 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.28
+* Fri Dec 19 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.2
 - Rebuilt for kernel
 
-* Fri Oct 31 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.27
+* Sun Dec 14 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7.1
 - Rebuilt for kernel
 
-* Tue Oct 28 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.26
-- Rebuilt for kernel
-
-* Thu Oct 16 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.25
-- Rebuilt for kernel
-
-* Fri Oct 10 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.24
-- Rebuilt for kernel
-
-* Tue Oct 07 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.23
-- Rebuilt for kernel
-
-* Fri Sep 19 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.22
-- Rebuilt for kernel
-
-* Thu Sep 18 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.21
-- Rebuilt for kernel
-
-* Tue Sep 09 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.20
-- Rebuilt for kernel
-
-* Sat Aug 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.19
-- Rebuilt for kernel
-
-* Wed Aug 20 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.18
-- Rebuilt for kernel
-
-* Wed Aug 20 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.17
-- Rebuilt for kernel
-
-* Fri Aug 15 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.16
-- Rebuilt for kernel
-
-* Wed Aug 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.15
-- Rebuilt for kernel
-
-* Sat Aug 02 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.14
-- Rebuilt for kernel
-
-* Fri Aug 01 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.13
-- Rebuilt for kernel
-
-* Fri Jul 18 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.12
-- Rebuilt for kernel
-
-* Thu Jul 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.11
-- Rebuilt for kernel
-
-* Tue Jul 08 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.10
-- Rebuilt for kernel
-
-* Tue Jul 08 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.9
-- Rebuilt for kernel
-
-* Tue Jul 08 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.8
-- Rebuilt for kernel
-
-* Tue Jun 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.7
-- Rebuilt for kernel
-
-* Fri Jun 13 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.6
-- Rebuilt for kernel
-
-* Sun Jun 08 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.5
-- Rebuilt for kernel
+* Sat Dec 06 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-7
+- Add 3.14 patch
 
-* Tue Jun 03 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.4
-- Rebuilt for kernel
-
-* Thu May 15 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.3
-- Rebuilt for kernel
-
-* Thu May 08 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.2
-- Rebuilt for kernel
-
-* Wed Apr 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6.1
-- Rebuilt for kernel
-
-* Thu Apr 24 2014 Leigh Scott <leigh123linux@googlemail.com> - 1.59-6
-- patch for 3.14 kernel
-
-* Wed Apr 16 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.18
-- Rebuilt for kernel
-
-* Fri Apr 04 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.17
-- Rebuilt for kernel
-
-* Wed Apr 02 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.16
-- Rebuilt for kernel
-
-* Tue Mar 25 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.15
-- Rebuilt for kernel
-
-* Sun Mar 09 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.14
-- Rebuilt for kernel
-
-* Tue Mar 04 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.13
-- Rebuilt for kernel
-
-* Tue Feb 25 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.12
-- Rebuilt for kernel
-
-* Mon Feb 24 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.11
-- Rebuilt for kernel
-
-* Mon Feb 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.10
-- Rebuilt for kernel
-
-* Sat Feb 15 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.9
-- Rebuilt for kernel
-
-* Wed Feb 12 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.8
-- Rebuilt for kernel
-
-* Fri Feb 07 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.7
-- Rebuilt for kernel
-
-* Thu Jan 30 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.6
-- Rebuilt for kernel
-
-* Tue Jan 28 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.5
-- Rebuilt for kernel
-
-* Fri Jan 17 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.4
-- Rebuilt for kernel
-
-* Sun Jan 12 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.3
-- Rebuilt for kernel
-
-* Wed Dec 25 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.2
-- Rebuilt for kernel
-
-* Fri Dec 20 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5.1
-- Rebuilt for kernel
+* Fri Dec 05 2014 Nicolas Chauvet <kwizart@gmail.com> - 1.59-6
+- Rebuilt for f21 final kernel
 
 * Tue Dec 10 2013 Nicolas Chauvet <kwizart@gmail.com> - 1.59-5
 - Rebuilt for f20 final kernel
