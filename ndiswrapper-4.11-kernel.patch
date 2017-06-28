@@ -1,0 +1,47 @@
+--- a/driver/ndis.c
++++ b/driver/ndis.c
+@@ -2258,7 +2258,9 @@
+ 			WARNING("empty packet ignored");
+ 			continue;
+ 		}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
+ 		wnd->net_dev->last_rx = jiffies;
++#endif
+ 		/* get total number of bytes in packet */
+ 		NdisGetFirstBufferFromPacketSafe(packet, &buffer, &virt,
+ 						 &length, &total_length,
+@@ -2346,7 +2348,9 @@
+ 		ERROR("nmb is NULL");
+ 		EXIT3(return);
+ 	}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
+ 	wnd->net_dev->last_rx = jiffies;
++#endif
+ 
+ 	if (look_ahead_size < packet_size) {
+ 		struct ndis_packet *packet;
+@@ -2461,7 +2465,9 @@
+ 		WARNING("illegal packet");
+ 		EXIT3(return);
+ 	}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
+ 	wnd->net_dev->last_rx = jiffies;
++#endif
+ 	oob_data = NDIS_PACKET_OOB_DATA(packet);
+ 	skb_size = sizeof(oob_data->header) + oob_data->look_ahead_size +
+ 		bytes_txed;
+
+--- a/driver/ntoskernel.h
++++ b/driver/ntoskernel.h
+@@ -48,6 +48,10 @@
+ #include <linux/workqueue.h>
+ #include <linux/vmalloc.h>
+ 
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
++#include <linux/sched/signal.h>
++#endif
+ 
+ #if !defined(CONFIG_X86) && !defined(CONFIG_X86_64)
+ #error "this module is for x86 or x86_64 architectures only"
+
