@@ -1,0 +1,12 @@
+diff -up ndiswrapper-1.61/driver/ntoskernel.h.rhel ndiswrapper-1.61/driver/ntoskernel.h
+--- ndiswrapper-1.61/driver/ntoskernel.h.rhel	2017-07-05 07:42:12.366904810 +0200
++++ ndiswrapper-1.61/driver/ntoskernel.h	2017-07-05 07:43:40.163327317 +0200
+@@ -353,7 +353,7 @@ static inline void netif_poll_disable(st
+ #define netdev_notifier_info_to_dev(x) ((struct net_device *)(x))
+ #endif
+ 
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,13,0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+ static inline void reinit_completion(struct completion *x)
+ {
+ 	INIT_COMPLETION(*x);
