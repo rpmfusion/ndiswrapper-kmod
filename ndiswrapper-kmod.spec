@@ -19,6 +19,7 @@ Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
 Patch1:		ndiswrapper-1.61-rhel.patch
+Patch2:		ndiswrapper-kmod-rhel6.patch
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # needed for plague to make sure it builds for i586 and i686
@@ -51,6 +52,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
 %patch1 -p1 -b .rhel
+%patch2 -p1 -b .rhel6
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
