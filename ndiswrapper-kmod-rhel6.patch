@@ -1,0 +1,13 @@
+diff -up ndiswrapper-1.61/driver/proc.c.rhel6 ndiswrapper-1.61/driver/proc.c
+--- ndiswrapper-1.61/driver/proc.c.rhel6	2016-10-09 17:45:08.000000000 +0200
++++ ndiswrapper-1.61/driver/proc.c	2017-08-03 17:11:04.969390144 +0200
+@@ -60,7 +60,9 @@ static inline void proc_remove(struct pr
+ 	if (de)
+ 		remove_proc_entry(de->name, de->parent);
+ }
++#endif
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,32)
+ static inline void *PDE_DATA(const struct inode *inode)
+ {
+ 	return PDE(inode)->data;
