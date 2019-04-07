@@ -13,7 +13,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.61
-Release: 	9%{?pre}%{?dist}
+Release: 	10%{?pre}%{?dist}
 License: 	GPLv2
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
@@ -22,6 +22,7 @@ Patch0:		ndiswrapper-kmod-nomodinfo.patch
 Patch1:     ndiswrapper-4.11-kernel.patch
 Patch2:     ndiswrapper-4.13-kernel.patch
 Patch3:     ndiswrapper-4.15-kernel.patch
+Patch4:     ndiswrapper-5.0-kernel.patch
 
 # needed for plague to make sure it builds for i586 and i686
 ExclusiveArch:  i686 x86_64
@@ -55,6 +56,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %patch1 -p1 -b .orig
 %patch2 -p2 -b .orig
 %patch3 -p1 -b .orig
+%patch4 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -77,6 +79,9 @@ done
 
 
 %changelog
+* Sun Apr 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 1.61-10
+- Patch for 5.0 kernel
+
 * Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.61-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
