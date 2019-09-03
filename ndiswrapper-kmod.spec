@@ -11,7 +11,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.61
-Release: 	2%{?pre}%{?dist}
+Release: 	3%{?pre}%{?dist}
 License: 	GPLv2
 Group: 		System Environment/Kernel
 URL:		http://ndiswrapper.sourceforge.net
@@ -78,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 03 2019 Leigh Scott <leigh123linux@googlemail.com> - 1.61-3
+- Rebuild for new el7 kernel
+
 * Wed Jul 05 2017 Nicolas Chauvet <kwizart@gmail.com> - 1.61-2
 - Add patch for rhel kernel
 
