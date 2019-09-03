@@ -1,6 +1,5 @@
-diff -up ndiswrapper-1.61/driver/ntoskernel.h.rhel ndiswrapper-1.61/driver/ntoskernel.h
---- ndiswrapper-1.61/driver/ntoskernel.h.rhel	2017-07-05 07:42:12.366904810 +0200
-+++ ndiswrapper-1.61/driver/ntoskernel.h	2017-07-05 07:43:40.163327317 +0200
+--- ndiswrapper-1.61/driver/ntoskernel.h.rhel
++++ ndiswrapper-1.61/driver/ntoskernel.h
 @@ -353,7 +353,7 @@ static inline void netif_poll_disable(st
  #define netdev_notifier_info_to_dev(x) ((struct net_device *)(x))
  #endif
@@ -10,3 +9,82 @@ diff -up ndiswrapper-1.61/driver/ntoskernel.h.rhel ndiswrapper-1.61/driver/ntosk
  static inline void reinit_completion(struct completion *x)
  {
  	INIT_COMPLETION(*x);
+@@ -367,7 +367,7 @@ static int strncasecmp(const char *s1, c
+ }
+ #endif
+ 
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,7,0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+ static inline void netif_trans_update(struct net_device *dev)
+ {
+ 	dev->trans_start = jiffies;
+--- ndiswrapper-1.61/driver/wrapndis.c.rhel
++++ ndiswrapper-1.61/driver/wrapndis.c
+@@ -1789,7 +1789,7 @@ static const struct net_device_ops ndis_
+ 	.ndo_open = ndis_net_dev_open,
+ 	.ndo_stop = ndis_net_dev_close,
+ 	.ndo_start_xmit = tx_skbuff,
+-	.ndo_change_mtu = ndis_change_mtu,
++	.ndo_change_mtu_rh74 = ndis_change_mtu,
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0)
+ 	.ndo_set_rx_mode = ndis_set_multicast_list,
+ #else
+--- ndiswrapper-1.61/driver/usb.c.rhel
++++ ndiswrapper-1.61/driver/usb.c
+@@ -750,6 +750,12 @@ static USBD_STATUS wrap_set_clear_feature(struct usb_device *udev,
+ 	USBEXIT(return NT_URB_STATUS(nt_urb));
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
++#define wrap_usb_get_status usb_get_status
++#else
++#define wrap_usb_get_status usb_get_std_status
++#endif
++
+ static USBD_STATUS wrap_get_status_request(struct usb_device *udev,
+ 					   struct irp *irp)
+ {
+@@ -776,8 +782,8 @@ static USBD_STATUS wrap_get_status_request(struct usb_device *udev,
+ 		return NT_URB_STATUS(nt_urb);
+ 	}
+ 	assert(status_req->transfer_buffer_length == sizeof(u16));
+-	ret = usb_get_status(udev, type, status_req->index,
+-			     status_req->transfer_buffer);
++	ret = wrap_usb_get_status(udev, type, status_req->index,
++				  status_req->transfer_buffer);
+ 	if (ret >= 0) {
+ 		assert(ret <= status_req->transfer_buffer_length);
+ 		status_req->transfer_buffer_length = ret;
+--- a/driver/ndis.c
++++ b/driver/ndis.c
+@@ -2258,7 +2258,9 @@
+ 			WARNING("empty packet ignored");
+ 			continue;
+ 		}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+ 		wnd->net_dev->last_rx = jiffies;
++#endif
+ 		/* get total number of bytes in packet */
+ 		NdisGetFirstBufferFromPacketSafe(packet, &buffer, &virt,
+ 						 &length, &total_length,
+@@ -2346,7 +2348,9 @@
+ 		ERROR("nmb is NULL");
+ 		EXIT3(return);
+ 	}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+ 	wnd->net_dev->last_rx = jiffies;
++#endif
+ 
+ 	if (look_ahead_size < packet_size) {
+ 		struct ndis_packet *packet;
+@@ -2461,7 +2465,9 @@
+ 		WARNING("illegal packet");
+ 		EXIT3(return);
+ 	}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+ 	wnd->net_dev->last_rx = jiffies;
++#endif
+ 	oob_data = NDIS_PACKET_OOB_DATA(packet);
+ 	skb_size = sizeof(oob_data->header) + oob_data->look_ahead_size +
+ 		bytes_txed;
+
