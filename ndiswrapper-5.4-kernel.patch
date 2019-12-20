@@ -1,0 +1,25 @@
+Description: Fix FTBFS with kernel 5.4
+Author: Paolo Pisati <paolo.pisati@canonical.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1848588
+
+--- a/driver/wrapndis.c
++++ b/driver/wrapndis.c
+@@ -457,10 +457,18 @@
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+ 		sg_element++;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5,4,0)
+ 		sg_element->length = frag->size;
++#else
++		sg_element->length = skb_frag_size(frag);
++#endif
+ 		sg_element->address =
+ 			pci_map_page(wnd->wd->pci.pdev, skb_frag_page(frag),
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5,4,0)
+ 				     frag->page_offset, frag->size,
++#else
++				     skb_frag_off(frag), skb_frag_size(frag),
++#endif
+ 				     PCI_DMA_TODEVICE);
+ 		TRACE3("%llx, %u", sg_element->address, sg_element->length);
+ 	}
