@@ -13,7 +13,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.61
-Release: 	12%{?pre}%{?dist}
+Release: 	13%{?pre}%{?dist}
 License: 	GPLv2
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
@@ -83,6 +83,9 @@ done
 
 
 %changelog
+* Wed Feb 05 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.61-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Dec 20 2019 Leigh Scott <leigh123linux@googlemail.com> - 1.61-12
 - Patch for 5.3 and 5.4 kernel
 
