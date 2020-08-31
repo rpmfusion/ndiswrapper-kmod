@@ -1,0 +1,45 @@
+--- a/driver/loader.c	2020-05-03 13:18:33.000000000 +0100
++++ b/driver/loader.c	2020-08-31 15:43:53.379776002 +0100
+@@ -155,8 +155,12 @@ static int load_sys_files(struct wrap_dr
+ #elif defined PAGE_KERNEL_EXEC
+ 		pe_image->image =
+ 			__vmalloc(load_driver->sys_files[i].size,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
++				  GFP_KERNEL | __GFP_HIGHMEM);
++#else
+ 				  GFP_KERNEL | __GFP_HIGHMEM,
+ 				  PAGE_KERNEL_EXEC);
++#endif
+ #else
+ #error x86_64 should have either PAGE_KERNEL_EXECUTABLE or PAGE_KERNEL_EXEC
+ #endif
+--- a/driver/pe_linker.c	2020-05-03 13:18:33.000000000 +0100
++++ b/driver/pe_linker.c	2020-08-31 15:49:48.147882380 +0100
+@@ -417,8 +417,12 @@ static int fix_pe_image(struct pe_image
+ 	image = __vmalloc(image_size, GFP_KERNEL | __GFP_HIGHMEM,
+ 			  PAGE_KERNEL_EXECUTABLE);
+ #elif defined PAGE_KERNEL_EXEC
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
++	image = __vmalloc(image_size, GFP_KERNEL | __GFP_HIGHMEM);
++#else
+ 	image = __vmalloc(image_size, GFP_KERNEL | __GFP_HIGHMEM,
+ 			  PAGE_KERNEL_EXEC);
++#endif
+ #else
+ #error x86_64 should have either PAGE_KERNEL_EXECUTABLE or PAGE_KERNEL_EXEC
+ #endif
+--- a/driver/ntoskernel.c	2020-05-03 13:18:33.000000000 +0100
++++ b/driver/ntoskernel.c	2020-08-31 15:55:47.458977337 +0100
+@@ -821,8 +821,12 @@ wstdcall void *WIN_FUNC(ExAllocatePoolWi
+ 		addr = kmalloc(size, irql_gfp());
+ 	else {
+ 		if (irql_gfp() & GFP_ATOMIC) {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
++			addr = __vmalloc(size, GFP_ATOMIC | __GFP_HIGHMEM);
++#else
+ 			addr = __vmalloc(size, GFP_ATOMIC | __GFP_HIGHMEM,
+ 					 PAGE_KERNEL);
++#endif
+ 			TRACE1("%p, %zu", addr, size);
+ 		} else {
+ 			addr = vmalloc(size);
