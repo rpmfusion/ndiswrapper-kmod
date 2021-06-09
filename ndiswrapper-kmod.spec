@@ -3,7 +3,9 @@
 # "buildforkernels newest" macro for just that build; immediately after
 # queuing that build enable the macro again for subsequent builds; that way
 # a new akmod package will only get build when a new one is actually needed
-%if 0%{?fedora}
+# RHEL8 kernel doesn't have WEXT, so only build an akmod there
+# so that others kernel implementation can have ndiswrapper
+%if 0%{?fedora} || 0%{?rhel} > 7
 %global buildforkernels akmod
 %global debug_package %{nil}
 %endif
