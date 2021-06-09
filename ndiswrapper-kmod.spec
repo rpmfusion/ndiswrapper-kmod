@@ -14,16 +14,14 @@
 
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
-Version: 	1.61
-Release: 	8%{?pre}%{?dist}
+Version: 	1.63
+Release: 	2%{?pre}%{?dist}
 License: 	GPLv2
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
-Patch1:     ndiswrapper-4.11-kernel.patch
-Patch2:     ndiswrapper-4.13-kernel.patch
-Patch3:     ndiswrapper-4.15-kernel.patch
+Patch1:     kernel-5.8.patch
 
 # needed for plague to make sure it builds for i586 and i686
 ExclusiveArch:  i686 x86_64
@@ -55,8 +53,6 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
 %patch1 -p1 -b .orig
-%patch2 -p2 -b .orig
-%patch3 -p1 -b .orig
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
@@ -79,6 +75,34 @@ done
 
 
 %changelog
+* Wed Feb 03 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.63-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Mon Aug 31 2020 Leigh Scott <leigh123linux@gmail.com> - 1.63-1
+- Update to 1.63
+- Patch for 5.8 kernel
+
+* Tue Aug 18 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.62-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Apr 22 2020 Leigh Scott <leigh123linux@gmail.com> - 1.62-1
+- Update to 1.62
+
+* Wed Feb 05 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.61-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Fri Dec 20 2019 Leigh Scott <leigh123linux@googlemail.com> - 1.61-12
+- Patch for 5.3 and 5.4 kernel
+
+* Fri Aug 09 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.61-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Sun Apr 07 2019 Leigh Scott <leigh123linux@googlemail.com> - 1.61-10
+- Patch for 5.0 kernel
+
+* Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1.61-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Dec 13 2018 Nicolas Chauvet <kwizart@gmail.com> - 1.61-8
 - Package clean-up
 - Drop some changelog
