@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.63
-Release: 	5%{?pre}%{?dist}
+Release: 	6%{?pre}%{?dist}
 License: 	GPLv2
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
@@ -71,6 +71,10 @@ done
 
 
 %changelog
+* Thu Sep 01 2022 Nicolas Chauvet <kwizart@gmail.com> - 1.63-6
+- Update for kernel 5.17 from leigh
+- Update for kernel 5.18 from kwizart
+
 * Sun Aug 07 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1.63-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg
   5.1
