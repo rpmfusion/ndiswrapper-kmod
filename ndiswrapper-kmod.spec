@@ -1,14 +1,7 @@
-# buildforkernels macro hint: when you build a new version or a new release
-# that contains bugfixes or other improvements then you must disable the
-# "buildforkernels newest" macro for just that build; immediately after
-# queuing that build enable the macro again for subsequent builds; that way
-# a new akmod package will only get build when a new one is actually needed
-# RHEL8 kernel doesn't have WEXT, so only build an akmod there
-# so that others kernel implementation can have ndiswrapper
 %if 0%{?fedora} || 0%{?rhel} > 7
 %global buildforkernels akmod
-%global debug_package %{nil}
 %endif
+%global debug_package %{nil}
 
 #global pre rc1
 
@@ -22,8 +15,9 @@ Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.
 Source11:	ndiswrapper-kmodtool-excludekernel-filterfile
 Patch0:		ndiswrapper-kmod-nomodinfo.patch
 Patch1:     kernel-5.8.patch
+Patch2:     kernel-5.17.patch
+Patch3:     kernel-5.18.patch
 
-# needed for plague to make sure it builds for i586 and i686
 ExclusiveArch:  i686 x86_64
 
 # get the needed BuildRequires (in parts depending on what we build for)
@@ -53,6 +47,8 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 (cd ndiswrapper-%{version}%{?pre} ; 
 %patch0 -p1 -b .orig
 %patch1 -p1 -b .orig
+%patch2 -p1 -b .orig
+%patch3 -p1 -b .orig2
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
