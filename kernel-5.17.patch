@@ -1,0 +1,27 @@
+--- a/driver/proc.c
++++ b/driver/proc.c
+@@ -104,6 +104,10 @@ static int do_proc_make_entry(const char
+ 	return 0;
+ }
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0))
++#define PDE_DATA(inode) pde_data(inode)
++#endif
++
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+ #define PROC_DECLARE_RO(name) \
+ 	static int proc_##name##_open(struct inode *inode, struct file *file) \
+--- a/driver/ntoskernel.c
++++ b/driver/ntoskernel.c
+@@ -1643,7 +1643,11 @@ wstdcall NTSTATUS WIN_FUNC(PsTerminateSy
+ 	} else
+ 		ERROR("couldn't find thread for task: %p", current);
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 17, 0))
++	kthread_complete_and_exit(NULL, status);
++#else
+ 	complete_and_exit(NULL, status);
++#endif
+ 	ERROR("oops: %p, %d", thread->task, thread->pid);
+ 	return STATUS_FAILURE;
+ }

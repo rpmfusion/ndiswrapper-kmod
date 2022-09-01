@@ -1,0 +1,213 @@
+diff -up ndiswrapper-1.63/driver/ndis.c.orig2 ndiswrapper-1.63/driver/ndis.c
+--- ndiswrapper-1.63/driver/ndis.c.orig2	2020-05-03 14:18:33.000000000 +0200
++++ ndiswrapper-1.63/driver/ndis.c	2022-09-01 15:55:13.271733795 +0200
+@@ -945,18 +945,18 @@ wstdcall NDIS_STATUS WIN_FUNC(NdisMAlloc
+ 		EXIT2(return NDIS_STATUS_RESOURCES);
+ 	}
+ 	if (dmasize == NDIS_DMA_24BITS) {
+-		if (pci_set_dma_mask(wnd->wd->pci.pdev, DMA_BIT_MASK(24)) ||
+-		    pci_set_consistent_dma_mask(wnd->wd->pci.pdev,
++		if (dma_set_mask(&wnd->wd->pci.pdev->dev, DMA_BIT_MASK(24)) ||
++		    dma_set_coherent_mask(&wnd->wd->pci.pdev->dev,
+ 						DMA_BIT_MASK(24)))
+ 			WARNING("setting dma mask failed");
+ 	} else if (dmasize == NDIS_DMA_32BITS) {
+ 		/* consistent dma is in low 32-bits by default */
+-		if (pci_set_dma_mask(wnd->wd->pci.pdev, DMA_BIT_MASK(32)))
++		if (dma_set_mask(&wnd->wd->pci.pdev->dev, DMA_BIT_MASK(32)))
+ 			WARNING("setting dma mask failed");
+ #ifdef CONFIG_X86_64
+ 	} else if (dmasize == NDIS_DMA_64BITS) {
+-		if (pci_set_dma_mask(wnd->wd->pci.pdev, DMA_BIT_MASK(64)) ||
+-		    pci_set_consistent_dma_mask(wnd->wd->pci.pdev,
++		if (dma_set_mask(&wnd->wd->pci.pdev->dev, DMA_BIT_MASK(64)) ||
++		    dma_set_coherent_mask(&wnd->wd->pci.pdev->dev,
+ 						DMA_BIT_MASK(64)))
+ 			WARNING("setting dma mask failed");
+ 		else
+@@ -1045,7 +1045,7 @@ wstdcall void WIN_FUNC(NdisMStartBufferP
+ 	wnd->dma_map_addr[index] =
+ 		PCI_DMA_MAP_SINGLE(wnd->wd->pci.pdev,
+ 				   MmGetSystemAddressForMdl(buf),
+-				   MmGetMdlByteCount(buf), PCI_DMA_TODEVICE);
++				   MmGetMdlByteCount(buf), DMA_TO_DEVICE);
+ 	phy_addr_array[0].phy_addr = wnd->dma_map_addr[index];
+ 	phy_addr_array[0].length = MmGetMdlByteCount(buf);
+ 	TRACE4("%llx, %d, %d", phy_addr_array[0].phy_addr,
+@@ -1074,7 +1074,7 @@ wstdcall void WIN_FUNC(NdisMCompleteBuff
+ 	TRACE4("%llx", (unsigned long long)wnd->dma_map_addr[index]);
+ 	if (wnd->dma_map_addr[index]) {
+ 		PCI_DMA_UNMAP_SINGLE(wnd->wd->pci.pdev, wnd->dma_map_addr[index],
+-				     MmGetMdlByteCount(buf), PCI_DMA_TODEVICE);
++				     MmGetMdlByteCount(buf), DMA_TO_DEVICE);
+ 		wnd->dma_map_addr[index] = 0;
+ 	} else
+ 		WARNING("map registers at %u not used", index);
+@@ -1092,7 +1092,7 @@ wstdcall void WIN_FUNC(NdisMAllocateShar
+ 		ERROR("used on a non-PCI device");
+ 		return;
+ 	}
+-	*virt = PCI_DMA_ALLOC_COHERENT(wd->pci.pdev, size, &dma_addr);
++	*virt = dma_alloc_coherent(&wd->pci.pdev->dev, size, &dma_addr, GFP_KERNEL);
+ 	if (*virt)
+ 		*phys = dma_addr;
+ 	else
+@@ -1111,7 +1111,7 @@ wstdcall void WIN_FUNC(NdisMFreeSharedMe
+ 		ERROR("used on a non-PCI device");
+ 		return;
+ 	}
+-	PCI_DMA_FREE_COHERENT(wd->pci.pdev, size, virt, addr);
++	dma_free_coherent(&wd->pci.pdev->dev, size, virt, addr);
+ 	EXIT3(return);
+ }
+ 
+@@ -2292,8 +2292,15 @@ wstdcall void NdisMIndicateReceivePacket
+ 
+ 			if (in_interrupt())
+ 				netif_rx(skb);
+-			else
++			else {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
++				local_bh_disable();
++				netif_rx(skb);
++				local_bh_enable();
++#else
+ 				netif_rx_ni(skb);
++#endif
++			}
+ 		} else {
+ 			WARNING("couldn't allocate skb; packet dropped");
+ 			atomic_inc_var(wnd->net_stats.rx_dropped);
+@@ -2440,8 +2447,15 @@ wstdcall void EthRxIndicateHandler(struc
+ 		atomic_inc_var(wnd->net_stats.rx_packets);
+ 		if (in_interrupt())
+ 			netif_rx(skb);
+-		else
++		else {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
++			local_bh_disable();
++			netif_rx(skb);
++			local_bh_enable();
++#else
+ 			netif_rx_ni(skb);
++#endif
++		}
+ 	}
+ 
+ 	EXIT3(return);
+@@ -2505,8 +2519,15 @@ wstdcall void NdisMTransferDataComplete(
+ 
+ 	if (in_interrupt())
+ 		netif_rx(skb);
+-	else
++	else {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
++		local_bh_disable();
++		netif_rx(skb);
++		local_bh_enable();
++#else
+ 		netif_rx_ni(skb);
++#endif
++	}
+ }
+ 
+ /* called via function pointer */
+@@ -2629,8 +2650,8 @@ wstdcall NDIS_STATUS WIN_FUNC(NdisMIniti
+ #ifdef CONFIG_X86_64
+ 	if (!dma64_supported) {
+ 		TRACE1("64-bit DMA size is not supported");
+-		if (pci_set_dma_mask(wnd->wd->pci.pdev, DMA_BIT_MASK(32)) ||
+-		    pci_set_consistent_dma_mask(wnd->wd->pci.pdev,
++		if (dma_set_mask(&wnd->wd->pci.pdev->dev, DMA_BIT_MASK(32)) ||
++		    dma_set_coherent_mask(&wnd->wd->pci.pdev->dev,
+ 						DMA_BIT_MASK(32)))
+ 			WARNING("setting dma mask failed");
+ 	}
+diff -up ndiswrapper-1.63/driver/ntoskernel.h.orig2 ndiswrapper-1.63/driver/ntoskernel.h
+--- ndiswrapper-1.63/driver/ntoskernel.h.orig2	2020-05-03 14:18:33.000000000 +0200
++++ ndiswrapper-1.63/driver/ntoskernel.h	2022-09-01 15:55:13.271733795 +0200
+@@ -52,6 +52,10 @@
+ #include <linux/sched/signal.h>
+ #endif
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
++#include <linux/prandom.h>
++#endif
++
+ #if !defined(CONFIG_X86) && !defined(CONFIG_X86_64)
+ #error "this module is for x86 or x86_64 architectures only"
+ #endif
+diff -up ndiswrapper-1.63/driver/pnp.c.orig2 ndiswrapper-1.63/driver/pnp.c
+--- ndiswrapper-1.63/driver/pnp.c.orig2	2020-05-03 14:18:33.000000000 +0200
++++ ndiswrapper-1.63/driver/pnp.c	2022-09-01 15:55:13.271733795 +0200
+@@ -61,8 +61,8 @@ static NTSTATUS start_pdo(struct device_
+ 	/* 64-bit broadcom driver doesn't work if DMA is allocated
+ 	 * from over 1GB */
+ 	if (wd->vendor == 0x14e4) {
+-		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(30)) ||
+-		    pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(30)))
++		if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(30)) ||
++		    dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(30)))
+ 			WARNING("couldn't set DMA mask; this driver "
+ 				"may not work with more than 1GB RAM");
+ 	}
+diff -up ndiswrapper-1.63/driver/wrapndis.c.orig2 ndiswrapper-1.63/driver/wrapndis.c
+--- ndiswrapper-1.63/driver/wrapndis.c.orig2	2020-05-03 14:18:33.000000000 +0200
++++ ndiswrapper-1.63/driver/wrapndis.c	2022-09-01 15:55:13.271733795 +0200
+@@ -433,8 +433,8 @@ static int setup_tx_sg_list(struct ndis_
+ 	if (skb_shinfo(skb)->nr_frags <= 1) {
+ 		sg_element = &oob_data->wrap_tx_sg_list.elements[0];
+ 		sg_element->address =
+-			PCI_DMA_MAP_SINGLE(wnd->wd->pci.pdev, skb->data,
+-					   skb->len, PCI_DMA_TODEVICE);
++			dma_map_single(&wnd->wd->pci.pdev->dev, skb->data,
++					   skb->len, DMA_TO_DEVICE);
+ 		sg_element->length = skb->len;
+ 		oob_data->wrap_tx_sg_list.nent = 1;
+ 		oob_data->ext.info[ScatterGatherListPacketInfo] =
+@@ -452,8 +452,8 @@ static int setup_tx_sg_list(struct ndis_
+ 	sg_element = sg_list->elements;
+ 	sg_element->length = skb_headlen(skb);
+ 	sg_element->address =
+-		PCI_DMA_MAP_SINGLE(wnd->wd->pci.pdev, skb->data,
+-				   skb_headlen(skb), PCI_DMA_TODEVICE);
++		dma_map_single(&wnd->wd->pci.pdev->dev, skb->data,
++				   skb_headlen(skb), DMA_TO_DEVICE);
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+ 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+ 		sg_element++;
+@@ -463,13 +463,13 @@ static int setup_tx_sg_list(struct ndis_
+ 		sg_element->length = frag->size;
+ #endif
+ 		sg_element->address =
+-			pci_map_page(wnd->wd->pci.pdev, skb_frag_page(frag),
++			dma_map_page(&wnd->wd->pci.pdev->dev, skb_frag_page(frag),
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
+ 				     skb_frag_off(frag), skb_frag_size(frag),
+ #else
+ 				     frag->page_offset, frag->size,
+ #endif
+-				     PCI_DMA_TODEVICE);
++				     DMA_TO_DEVICE);
+ 		TRACE3("%llx, %u", sg_element->address, sg_element->length);
+ 	}
+ 	oob_data->ext.info[ScatterGatherListPacketInfo] = sg_list;
+@@ -485,14 +485,14 @@ static void free_tx_sg_list(struct ndis_
+ 		oob_data->ext.info[ScatterGatherListPacketInfo];
+ 	sg_element = sg_list->elements;
+ 	TRACE3("%p, %d", sg_list, sg_list->nent);
+-	PCI_DMA_UNMAP_SINGLE(wnd->wd->pci.pdev, sg_element->address,
+-			     sg_element->length, PCI_DMA_TODEVICE);
++	dma_unmap_single(&wnd->wd->pci.pdev->dev, sg_element->address,
++			     sg_element->length, DMA_TO_DEVICE);
+ 	if (sg_list->nent == 1)
+ 		EXIT3(return);
+ 	for (i = 1; i < sg_list->nent; i++, sg_element++) {
+ 		TRACE3("%llx, %u", sg_element->address, sg_element->length);
+-		pci_unmap_page(wnd->wd->pci.pdev, sg_element->address,
+-			       sg_element->length, PCI_DMA_TODEVICE);
++		dma_unmap_page(&wnd->wd->pci.pdev->dev, sg_element->address,
++			       sg_element->length, DMA_TO_DEVICE);
+ 	}
+ 	TRACE3("%p", sg_list);
+ 	kfree(sg_list);
