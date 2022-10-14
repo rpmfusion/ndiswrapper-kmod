@@ -123,20 +123,6 @@ diff -up ndiswrapper-1.63/driver/ndis.c.orig2 ndiswrapper-1.63/driver/ndis.c
  						DMA_BIT_MASK(32)))
  			WARNING("setting dma mask failed");
  	}
-diff -up ndiswrapper-1.63/driver/ntoskernel.h.orig2 ndiswrapper-1.63/driver/ntoskernel.h
---- ndiswrapper-1.63/driver/ntoskernel.h.orig2	2020-05-03 14:18:33.000000000 +0200
-+++ ndiswrapper-1.63/driver/ntoskernel.h	2022-09-01 15:55:13.271733795 +0200
-@@ -52,6 +52,10 @@
- #include <linux/sched/signal.h>
- #endif
- 
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,18,0)
-+#include <linux/prandom.h>
-+#endif
-+
- #if !defined(CONFIG_X86) && !defined(CONFIG_X86_64)
- #error "this module is for x86 or x86_64 architectures only"
- #endif
 diff -up ndiswrapper-1.63/driver/pnp.c.orig2 ndiswrapper-1.63/driver/pnp.c
 --- ndiswrapper-1.63/driver/pnp.c.orig2	2020-05-03 14:18:33.000000000 +0200
 +++ ndiswrapper-1.63/driver/pnp.c	2022-09-01 15:55:13.271733795 +0200
