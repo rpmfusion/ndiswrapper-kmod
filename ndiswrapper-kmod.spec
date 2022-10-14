@@ -17,6 +17,7 @@ Patch0:		ndiswrapper-kmod-nomodinfo.patch
 Patch1:     kernel-5.8.patch
 Patch2:     kernel-5.17.patch
 Patch3:     kernel-5.18.patch
+Patch4:     kernel-pseed.patch
 
 ExclusiveArch:  i686 x86_64
 
@@ -49,6 +50,7 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 %patch1 -p1 -b .orig
 %patch2 -p1 -b .orig
 %patch3 -p1 -b .orig2
+%patch4 -p1 -b .pseed
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
