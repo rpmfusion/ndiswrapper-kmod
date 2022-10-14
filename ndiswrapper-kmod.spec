@@ -8,7 +8,7 @@
 Summary:	Ndiswrapper kernel module
 Name: 		ndiswrapper-kmod
 Version: 	1.63
-Release: 	6%{?pre}%{?dist}
+Release: 	7%{?pre}%{?dist}
 License: 	GPLv2
 URL:		http://ndiswrapper.sourceforge.net
 Source0: 	http://downloads.sf.net/ndiswrapper/ndiswrapper-%{version}%{?pre}.tar.gz
@@ -73,6 +73,9 @@ done
 
 
 %changelog
+* Fri Oct 14 2022 Nicolas Chauvet <kwizart@gmail.com> - 1.63-7
+- Update prandom_seed
+
 * Thu Sep 01 2022 Nicolas Chauvet <kwizart@gmail.com> - 1.63-6
 - Update for kernel 5.17 from leigh
 - Update for kernel 5.18 from kwizart
