@@ -46,11 +46,11 @@ kmodtool  --target %{_target_cpu} --repo rpmfusion --kmodname %{name} --filterfi
 # go
 %setup -q -c -T -a 0 -n %{name}-%{version}%{?pre}
 (cd ndiswrapper-%{version}%{?pre} ; 
-%patch0 -p1 -b .orig
-%patch1 -p1 -b .orig
-%patch2 -p1 -b .orig
-%patch3 -p1 -b .orig2
-%patch4 -p1 -b .pseed
+%patch -P0 -p1 -b .orig
+%patch -P1 -p1 -b .orig
+%patch -P2 -p1 -b .orig
+%patch -P3 -p1 -b .orig2
+%patch -P4 -p1 -b .pseed
 )
 sed -i 's|/sbin/depmod -a|/bin/true|' ndiswrapper-%{version}%{?pre}/driver/Makefile
 for kernel_version  in %{?kernel_versions} ; do
